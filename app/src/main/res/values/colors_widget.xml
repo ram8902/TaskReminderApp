@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="widget_background">#B30D0D1A</color>
-    <color name="widget_header_background">#337C3AED</color>
-    <color name="widget_text_primary">#F2FFFFFF</color>
-    <color name="widget_text_secondary">#8CFFFFFF</color>
-    
-    <color name="widget_urgency_overdue">#EF4444</color>
-    <color name="widget_urgency_soon">#F59E0B</color>
-    
-    <color name="widget_empty_icon">#06B6D4</color>
+    <!-- Surface: warm off-white, same as FlatSheet.surface -->
+    <color name="widget_background">#FAF9F7</color>
+
+    <!-- Accent: muted sage green -->
+    <color name="widget_accent">#3D7A5F</color>
+    <color name="widget_accent_surface">#EDF4F0</color>
+
+    <!-- Typography -->
+    <color name="widget_text_primary">#1A1A1A</color>
+    <color name="widget_text_secondary">#888480</color>
+
+    <!-- Divider / borders -->
+    <color name="widget_divider">#E5E2DC</color>
+    <color name="widget_border">#DAD7D1</color>
+
+    <!-- Urgency dots — kept warm/natural -->
+    <color name="widget_urgency_overdue">#C0392B</color>
+    <color name="widget_urgency_soon">#D68910</color>
+
+    <!-- Icon button background -->
+    <color name="widget_icon_btn_bg">#EDF4F0</color>
+
+    <!-- Done button background -->
+    <color name="widget_done_btn_bg">#EDF4F0</color>
+
+    <!-- Added missing colors -->
+    <color name="widget_empty_icon">#888480</color>
+    <color name="widget_header_background">#3D7A5F</color>
 </resources>

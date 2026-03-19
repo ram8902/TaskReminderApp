@@ -604,14 +604,37 @@ fun AnimatedCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Add Task Dialog
+// Add Task Dialog  —  minimal / flat redesign
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Design tokens for the flat sheet — independent of GlassTheme
+private object FlatSheet {
+    val surface      = Color(0xFFFAF9F7)       // warm off-white
+    val surfaceDark  = Color(0xFF1E1E24)       // near-black for dark mode
+    val border       = Color(0xFFE5E2DC)       // warm gray divider
+    val borderDark   = Color(0xFF2E2E38)
+    val textPrimary  = Color(0xFF1A1A1A)
+    val textPrimaryDark = Color(0xFFF0EEE8)
+    val textSecondary  = Color(0xFF888480)
+    val textSecondaryDark = Color(0xFF888480)
+    val accent       = Color(0xFF3D7A5F)       // muted sage green
+    val accentDark   = Color(0xFF5BA882)       // lighter sage for dark bg
+    val accentSurface = Color(0xFFEDF4F0)      // accent tint fill
+    val accentSurfaceDark = Color(0xFF1A2E25)
+    val handle       = Color(0xFFD4D0CA)
+    val handleDark   = Color(0xFF3A3A44)
+    val fieldBg      = Color(0xFFF2F0EC)
+    val fieldBgDark  = Color(0xFF28282F)
+    val fieldBorder  = Color(0xFFDAD7D1)
+    val fieldBorderDark = Color(0xFF3A3A44)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -> Unit) {
     var title       by remember { mutableStateOf("") }
     var intervalStr by remember { mutableStateOf("2") }
+    val isDark      = GlassTheme.isDark
 
     val dateStateStart = rememberDatePickerState(
         initialSelectedDateMillis = System.currentTimeMillis()
@@ -627,152 +650,266 @@ fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -
     val startStr   = dateStateStart.selectedDateMillis?.let { dateFormat.format(Date(it)) } ?: "–"
     val endStr     = dateStateEnd.selectedDateMillis?.let   { dateFormat.format(Date(it)) } ?: "–"
 
+    val sheetBg      = if (isDark) FlatSheet.surfaceDark      else FlatSheet.surface
+    val divider      = if (isDark) FlatSheet.borderDark       else FlatSheet.border
+    val labelColor   = if (isDark) FlatSheet.textSecondaryDark else FlatSheet.textSecondary
+    val titleColor   = if (isDark) FlatSheet.textPrimaryDark  else FlatSheet.textPrimary
+    val accent       = if (isDark) FlatSheet.accentDark       else FlatSheet.accent
+    val accentTint   = if (isDark) FlatSheet.accentSurfaceDark else FlatSheet.accentSurface
+    val fBg          = if (isDark) FlatSheet.fieldBgDark      else FlatSheet.fieldBg
+    val fBorder      = if (isDark) FlatSheet.fieldBorderDark  else FlatSheet.fieldBorder
+    val handleColor  = if (isDark) FlatSheet.handleDark       else FlatSheet.handle
+
     if (showStartPicker) {
         DatePickerDialog(
             onDismissRequest = { showStartPicker = false },
-            confirmButton    = {
-                TextButton(onClick = { showStartPicker = false }) { Text("OK") }
-            }
+            confirmButton    = { TextButton(onClick = { showStartPicker = false }) { Text("OK") } }
         ) { DatePicker(state = dateStateStart) }
     }
-
     if (showEndPicker) {
         DatePickerDialog(
             onDismissRequest = { showEndPicker = false },
-            confirmButton    = {
-                TextButton(onClick = { showEndPicker = false }) { Text("OK") }
-            }
+            confirmButton    = { TextButton(onClick = { showEndPicker = false }) { Text("OK") } }
         ) { DatePicker(state = dateStateEnd) }
     }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color.Transparent,
+        containerColor   = sheetBg,
         dragHandle = {
             Box(
                 modifier = Modifier
-                    .padding(top = 12.dp)
-                    .width(40.dp)
-                    .height(4.dp)
+                    .padding(top = 14.dp, bottom = 6.dp)
+                    .width(36.dp)
+                    .height(3.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.3f))
+                    .background(handleColor)
             )
         }
     ) {
-        GlassCard(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-            glassAlpha = 0.15f,
-            borderAlpha = 0.3f,
-            blurRadius = 40.dp
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .padding(top = 8.dp, bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            Column(
+            // ── Header ──────────────────────────────────────────────────────
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 24.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(accentTint),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null,
+                        tint = accent,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    "New task",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp,
+                    color = titleColor
+                )
+            }
+
+            // ── Section label ────────────────────────────────────────────────
+            Text(
+                "DETAILS",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.2.sp,
+                color = labelColor,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // ── Task title field ─────────────────────────────────────────────
+            OutlinedTextField(
+                value         = title,
+                onValueChange = { title = it },
+                placeholder   = { Text("What do you need to do?", color = labelColor, fontSize = 14.sp) },
+                singleLine    = true,
+                shape         = RoundedCornerShape(10.dp),
+                colors        = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor   = accent,
+                    unfocusedBorderColor = fBorder,
+                    focusedContainerColor   = fBg,
+                    unfocusedContainerColor = fBg,
+                    focusedTextColor    = titleColor,
+                    unfocusedTextColor  = titleColor,
+                    cursorColor         = accent
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(bottom = 10.dp)
+            )
+
+            // ── Interval field ───────────────────────────────────────────────
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(fBg)
+                    .border(1.dp, fBorder, RoundedCornerShape(10.dp))
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
             ) {
-                Text(
-                    "New Task",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = GlassTheme.textPrimary
+                Icon(
+                    Icons.Outlined.Schedule,
+                    contentDescription = null,
+                    tint   = accent,
+                    modifier = Modifier.size(18.dp)
                 )
-
-                // Task title field
+                Spacer(modifier = Modifier.width(10.dp))
+                Text("Remind every", fontSize = 14.sp, color = titleColor, modifier = Modifier.weight(1f))
                 OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Task title", color = GlassTheme.textSecondary) },
-                    leadingIcon = { Icon(Icons.Outlined.Notes, contentDescription = null, tint = GlassTheme.textSecondary) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(14.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GlassTheme.accentCyan,
-                        unfocusedBorderColor = Color.White.copy(0.2f),
-                        focusedContainerColor = Color.White.copy(0.07f),
-                        unfocusedContainerColor = Color.White.copy(0.07f),
-                        focusedTextColor = GlassTheme.textPrimary,
-                        unfocusedTextColor = GlassTheme.textPrimary,
-                        cursorColor = GlassTheme.accentCyan
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Interval field
-                OutlinedTextField(
-                    value = intervalStr,
+                    value         = intervalStr,
                     onValueChange = { intervalStr = it.filter { c -> c.isDigit() } },
-                    label = { Text("Reminder interval (hours)", color = GlassTheme.textSecondary) },
-                    leadingIcon = { Icon(Icons.Outlined.Schedule, contentDescription = null, tint = GlassTheme.textSecondary) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(14.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GlassTheme.accentCyan,
-                        unfocusedBorderColor = Color.White.copy(0.2f),
-                        focusedContainerColor = Color.White.copy(0.07f),
-                        unfocusedContainerColor = Color.White.copy(0.07f),
-                        focusedTextColor = GlassTheme.textPrimary,
-                        unfocusedTextColor = GlassTheme.textPrimary,
-                        cursorColor = GlassTheme.accentCyan
+                    singleLine    = true,
+                    shape         = RoundedCornerShape(8.dp),
+                    colors        = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor      = accent,
+                        unfocusedBorderColor    = fBorder,
+                        focusedContainerColor   = sheetBg,
+                        unfocusedContainerColor = sheetBg,
+                        focusedTextColor        = titleColor,
+                        unfocusedTextColor      = titleColor,
+                        cursorColor             = accent
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.width(64.dp)
                 )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("hr", fontSize = 14.sp, color = labelColor)
+            }
 
-                Text(
-                    "SCHEDULE",
-                    fontSize = 13.sp,
-                    letterSpacing = 1.5.sp,
-                    color = Color.White.copy(0.4f),
-                    fontWeight = FontWeight.SemiBold
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // ── Divider + section label ──────────────────────────────────────
+            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(divider))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "SCHEDULE",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.2.sp,
+                color = labelColor,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+
+            // ── Date row ────────────────────────────────────────────────────
+            Row(
+                modifier            = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                FlatDateButton(
+                    label    = "Start",
+                    dateStr  = startStr,
+                    accent   = accent,
+                    accentTint = accentTint,
+                    bgColor  = fBg,
+                    borderColor = fBorder,
+                    textColor = titleColor,
+                    labelColor = labelColor,
+                    onClick  = { showStartPicker = true },
+                    modifier = Modifier.weight(1f)
                 )
-
-                // Start date
-                DatePickerButton(
-                    label = "Start date",
-                    dateStr = startStr,
-                    icon = Icons.Outlined.CalendarMonth,
-                    onClick = { showStartPicker = true }
+                FlatDateButton(
+                    label    = "End",
+                    dateStr  = endStr,
+                    accent   = accent,
+                    accentTint = accentTint,
+                    bgColor  = fBg,
+                    borderColor = fBorder,
+                    textColor = titleColor,
+                    labelColor = labelColor,
+                    onClick  = { showEndPicker = true },
+                    modifier = Modifier.weight(1f)
                 )
+            }
 
-                // End date
-                DatePickerButton(
-                    label = "End date",
-                    dateStr = endStr,
-                    icon = Icons.Outlined.EventBusy,
-                    onClick = { showEndPicker = true }
-                )
+            Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = {
-                        val interval = intervalStr.toIntOrNull() ?: 2
-                        val start    = dateStateStart.selectedDateMillis ?: System.currentTimeMillis()
-                        val end      = dateStateEnd.selectedDateMillis   ?: (System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L)
-                        if (title.isNotBlank() && interval > 0) {
-                            onAdd(title, start, end, interval)
-                        }
-                    },
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    contentPadding = PaddingValues(0.dp),
-                    modifier = Modifier.fillMaxWidth().height(56.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Brush.horizontalGradient(listOf(GlassTheme.accentPurple, GlassTheme.accentCyan))),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Save Task", fontWeight = FontWeight.SemiBold, color = Color.White)
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(24.dp))
+            // ── Save button ──────────────────────────────────────────────────
+            val canSave = title.isNotBlank() && (intervalStr.toIntOrNull() ?: 0) > 0
+            Button(
+                onClick = {
+                    val interval = intervalStr.toIntOrNull() ?: 2
+                    val start    = dateStateStart.selectedDateMillis ?: System.currentTimeMillis()
+                    val end      = dateStateEnd.selectedDateMillis   ?: (System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L)
+                    if (canSave) onAdd(title, start, end, interval)
+                },
+                enabled  = canSave,
+                shape    = RoundedCornerShape(10.dp),
+                colors   = ButtonDefaults.buttonColors(
+                    containerColor         = accent,
+                    contentColor           = Color.White,
+                    disabledContainerColor = fBg,
+                    disabledContentColor   = labelColor
+                ),
+                modifier = Modifier.fillMaxWidth().height(52.dp)
+            ) {
+                Text("Save task", fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
             }
         }
     }
 }
 
+@Composable
+fun FlatDateButton(
+    label: String,
+    dateStr: String,
+    accent: Color,
+    accentTint: Color,
+    bgColor: Color,
+    borderColor: Color,
+    textColor: Color,
+    labelColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick      = onClick,
+        shape        = RoundedCornerShape(10.dp),
+        color        = bgColor,
+        border       = androidx.compose.foundation.BorderStroke(1.dp, borderColor),
+        modifier     = modifier
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(22.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(accentTint),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Outlined.CalendarMonth,
+                        contentDescription = null,
+                        tint     = accent,
+                        modifier = Modifier.size(13.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(label, fontSize = 11.sp, color = labelColor, fontWeight = FontWeight.SemiBold, letterSpacing = 0.8.sp)
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(dateStr, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = textColor)
+        }
+    }
+}
+
+// Keep the old DatePickerButton name as a shim so nothing else breaks
 @Composable
 fun DatePickerButton(
     label: String,
@@ -780,42 +917,16 @@ fun DatePickerButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
-    Surface(
-        onClick = onClick,
-        shape = RoundedCornerShape(14.dp),
-        color = Color.White.copy(alpha = 0.07f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(0.2f)),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = GlassTheme.accentCyan,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    label,
-                    fontSize = 12.sp,
-                    color = GlassTheme.textSecondary
-                )
-                Text(
-                    dateStr,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = GlassTheme.textPrimary
-                )
-            }
-            Icon(
-                Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = GlassTheme.textSecondary
-            )
-        }
-    }
+    val isDark = GlassTheme.isDark
+    FlatDateButton(
+        label       = label,
+        dateStr     = dateStr,
+        accent      = if (isDark) FlatSheet.accentDark else FlatSheet.accent,
+        accentTint  = if (isDark) FlatSheet.accentSurfaceDark else FlatSheet.accentSurface,
+        bgColor     = if (isDark) FlatSheet.fieldBgDark else FlatSheet.fieldBg,
+        borderColor = if (isDark) FlatSheet.fieldBorderDark else FlatSheet.fieldBorder,
+        textColor   = if (isDark) FlatSheet.textPrimaryDark else FlatSheet.textPrimary,
+        labelColor  = FlatSheet.textSecondary,
+        onClick     = onClick
+    )
 }

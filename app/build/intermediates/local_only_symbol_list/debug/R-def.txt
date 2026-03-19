@@ -1,8 +1,14 @@
 R_DEF: Internal format may change without notice
 local
+color widget_accent
+color widget_accent_surface
 color widget_background
+color widget_border
+color widget_divider
+color widget_done_btn_bg
 color widget_empty_icon
 color widget_header_background
+color widget_icon_btn_bg
 color widget_text_primary
 color widget_text_secondary
 color widget_urgency_overdue
@@ -16,7 +22,10 @@ drawable ic_widget_dot_overdue
 drawable ic_widget_dot_soon
 drawable ic_widget_settings
 drawable widget_bg
+drawable widget_done_btn_bg
 drawable widget_header_bg
+drawable widget_icon_btn_bg
+id item_accent_bar
 id item_btn_done
 id item_task_dot
 id item_task_name
@@ -24,8 +33,11 @@ id item_task_time
 id widget_btn_add
 id widget_btn_done
 id widget_container
+id widget_divider
 id widget_empty_view
+id widget_footer_row
 id widget_header
+id widget_header_row
 id widget_list_view
 id widget_task_dot
 id widget_task_name
