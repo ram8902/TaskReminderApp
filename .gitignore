@@ -1,0 +1,26 @@
+# Android artifacts
+build/
+.gradle/
+.idea/
+*.iml
+local.properties
+captures/
+
+# Logs
+*.log
+*.txt
+!README.md
+!settings.gradle.kts
+!build.gradle.kts
+
+# Gradle
+.gradle/
+build/
+
+# IDE settings
+.idea/
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
