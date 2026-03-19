@@ -35,4 +35,4 @@ The app follows standard modern Android Architecture guidelines:
 4. Run the app on an Android emulator or a physical device running Android 8.0 (Min SDK API 26) or higher.
 
 ## Download Link
-like: 
+link: 
