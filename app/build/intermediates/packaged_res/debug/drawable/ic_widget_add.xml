@@ -5,6 +5,11 @@
     android:viewportWidth="24.0"
     android:viewportHeight="24.0">
     <path
-        android:fillColor="@color/widget_background"
-        android:pathData="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+        android:fillColor="#33FFFFFF"
+        android:strokeColor="#4DFFFFFF"
+        android:strokeWidth="1"
+        android:pathData="M12,12 m-11,0 a11,11 0 1,1 22,0 a11,11 0 1,1 -22,0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M16,13H13V16H11V13H8V11H11V8H13V11H16V13Z" />
 </vector>

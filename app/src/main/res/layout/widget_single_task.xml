@@ -20,13 +20,13 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/widget_btn_settings"
+            android:id="@+id/widget_btn_add"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Settings"
-            android:src="@drawable/ic_widget_settings" />
+            android:contentDescription="Add Task"
+            android:src="@drawable/ic_widget_add" />
     </RelativeLayout>
 
     <TextView

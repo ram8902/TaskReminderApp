@@ -3,6 +3,7 @@ package com.example.taskreminder.ui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 // ── Palette ──────────────────────────────────────────────────────────────────
@@ -94,15 +95,36 @@ private val LightColorScheme = lightColorScheme(
 
 // ── Theme Composable ──────────────────────────────────────────────────────────
 
+val LocalDarkTheme = staticCompositionLocalOf { true }
+
 @Composable
 fun TaskReminderTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography  = Typography(),
-        content     = content
-    )
+    androidx.compose.runtime.CompositionLocalProvider(LocalDarkTheme provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography  = Typography(),
+            content     = content
+        )
+    }
+}
+
+// ── Glassmorphism Theme Tokens ────────────────────────────────────────────────
+object GlassTheme {
+    val isDark @Composable get() = LocalDarkTheme.current
+
+    val background @Composable get() = if (isDark) Color(0xFF0D0D1A) else Color(0xFFF6F4FF)
+    val glassWhite @Composable get() = if (isDark) Color.White.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.6f)
+    val glassBorder @Composable get() = if (isDark) Color.White.copy(alpha = 0.22f) else Color.White.copy(alpha = 0.4f)
+    val accentPurple = Color(0xFF7C3AED)
+    val accentCyan = Color(0xFF06B6D4)
+    val accentPink = Color(0xFFEC4899)
+    val textPrimary @Composable get() = if (isDark) Color.White.copy(alpha = 0.95f) else Color.Black.copy(alpha = 0.85f)
+    val textSecondary @Composable get() = if (isDark) Color.White.copy(alpha = 0.55f) else Color.Black.copy(alpha = 0.6f)
+    val priorityHigh = Color(0xFFEF4444)
+    val priorityMed = Color(0xFFF59E0B)
+    val priorityLow = Color(0xFF10B981)
 }

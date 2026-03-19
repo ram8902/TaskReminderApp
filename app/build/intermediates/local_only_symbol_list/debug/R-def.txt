@@ -23,7 +23,6 @@ id item_task_name
 id item_task_time
 id widget_btn_add
 id widget_btn_done
-id widget_btn_settings
 id widget_container
 id widget_empty_view
 id widget_header

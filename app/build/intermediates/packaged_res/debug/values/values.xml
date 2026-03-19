@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="widget_background">#0F0F10</color>
-    <color name="widget_empty_icon">#4A5568</color>
-    <color name="widget_header_background">#1A365D</color>
-    <color name="widget_text_primary">#FFFFFF</color>
-    <color name="widget_text_secondary">#8F9BB3</color>
-    <color name="widget_urgency_overdue">#FF3B30</color>
-    <color name="widget_urgency_soon">#FF9500</color>
+    <color name="widget_background">#B30D0D1A</color>
+    <color name="widget_empty_icon">#06B6D4</color>
+    <color name="widget_header_background">#337C3AED</color>
+    <color name="widget_text_primary">#F2FFFFFF</color>
+    <color name="widget_text_secondary">#8CFFFFFF</color>
+    <color name="widget_urgency_overdue">#EF4444</color>
+    <color name="widget_urgency_soon">#F59E0B</color>
     <string name="app_name">Task Reminder App</string>
     <style name="Theme.TaskReminderApp" parent="android:Theme.Material.Light.NoActionBar"/>
 </resources>

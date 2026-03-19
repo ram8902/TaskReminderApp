@@ -178,7 +178,6 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id widget_btn_add
 id widget_btn_done
-id widget_btn_settings
 id widget_container
 id widget_empty_view
 id widget_header

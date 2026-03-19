@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
 import com.example.taskreminder.MainActivity
+import com.example.taskreminder.QuickAddActivity
 import com.example.taskreminder.R
 
 class TaskListWidgetProvider : AppWidgetProvider() {
@@ -51,7 +52,14 @@ class TaskListWidgetProvider : AppWidgetProvider() {
                 context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_title, appPendingIntent)
-            views.setOnClickPendingIntent(R.id.widget_btn_add, appPendingIntent) // Bind Add button
+            
+            val addIntent = Intent(context, QuickAddActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val addPendingIntent = PendingIntent.getActivity(
+                context, 1, addIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_btn_add, addPendingIntent)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import com.example.taskreminder.MainActivity
+import com.example.taskreminder.QuickAddActivity
 import com.example.taskreminder.R
 import com.example.taskreminder.SettingsActivity
 import com.example.taskreminder.data.AppDatabase
@@ -68,14 +69,18 @@ class SingleTaskWidgetProvider : AppWidgetProvider() {
                 context, 0, Intent(context, MainActivity::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.widget_container, pendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_title, pendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_task_name, pendingIntent)
 
-            // Settings button -> SettingsActivity
-            val settingsIntent = PendingIntent.getActivity(
-                context, 0, Intent(context, SettingsActivity::class.java),
+            // Add button -> QuickAddActivity (floating over home screen)
+            val addIntent = Intent(context, QuickAddActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val addPendingIntent = PendingIntent.getActivity(
+                context, 1, addIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.widget_btn_settings, settingsIntent)
+            views.setOnClickPendingIntent(R.id.widget_btn_add, addPendingIntent)
 
             CoroutineScope(Dispatchers.IO).launch {
                 val db = AppDatabase.getDatabase(context)

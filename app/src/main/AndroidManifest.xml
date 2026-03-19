@@ -47,6 +47,15 @@
             android:exported="false"
             android:theme="@style/Theme.TaskReminderApp" />
 
+        <!-- Floating activity over home screen for quick task creation -->
+        <activity
+            android:name=".QuickAddActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- Widgets -->
         <receiver
             android:name=".widget.SingleTaskWidgetProvider"

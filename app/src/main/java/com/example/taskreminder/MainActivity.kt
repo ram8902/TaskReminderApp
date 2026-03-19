@@ -10,16 +10,23 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +37,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +52,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.Intent
 import java.util.concurrent.TimeUnit
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import com.example.taskreminder.ui.GlassTheme
+import com.example.taskreminder.ui.GlassCard
+import com.example.taskreminder.ui.AnimatedGlassBackground
 
 class MainActivity : ComponentActivity() {
 
@@ -51,8 +66,19 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { _: Boolean -> }
 
+    private val openAddTaskState = mutableStateOf(false)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        this.intent = intent
+        if (intent.getBooleanExtra("EXTRA_OPEN_ADD_TASK", false)) {
+            openAddTaskState.value = true
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        openAddTaskState.value = intent.getBooleanExtra("EXTRA_OPEN_ADD_TASK", false)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -70,7 +96,8 @@ class MainActivity : ComponentActivity() {
                         onToggleTheme = { darkTheme = !darkTheme },
                         onOpenSettings = {
                             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
-                        }
+                        },
+                        openAddTaskFlag = openAddTaskState
                     )
                 }
             }
@@ -88,85 +115,122 @@ fun TaskApp(
     viewModel: TaskViewModel = viewModel(),
     darkTheme: Boolean,
     onToggleTheme: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    openAddTaskFlag: MutableState<Boolean>
 ) {
-    var showAddTaskDialog by remember { mutableStateOf(false) }
+    var showAddTaskSheet by remember { mutableStateOf(false) }
     val tasks by viewModel.activeTasks.collectAsState()
     val listState = rememberLazyListState()
+
+    LaunchedEffect(openAddTaskFlag.value) {
+        if (openAddTaskFlag.value) {
+            showAddTaskSheet = true
+            openAddTaskFlag.value = false
+        }
+    }
 
     // Collapse FAB text when scrolling
     val expanded by remember { derivedStateOf { !listState.isScrollInProgress } }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            GradientHeader(
-                taskCount   = tasks.size,
-                darkTheme   = darkTheme,
-                onToggleTheme = onToggleTheme,
-                onOpenSettings = onOpenSettings
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick   = { showAddTaskDialog = true },
-                expanded  = expanded,
-                icon      = { Icon(Icons.Default.Add, contentDescription = null) },
-                text      = { Text("New Task", fontWeight = FontWeight.SemiBold) },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor   = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.shadow(12.dp, RoundedCornerShape(50))
-            )
-        }
-    ) { padding ->
-        // Smooth crossfade between empty state and the list
-        AnimatedContent(
-            targetState = tasks.isEmpty(),
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith
-                        fadeOut(animationSpec = tween(200))
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Behind everything: Animated background
+        AnimatedGlassBackground()
+
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                GlassTopBar(
+                    taskCount   = tasks.size,
+                    darkTheme   = darkTheme,
+                    onToggleTheme = onToggleTheme,
+                    onOpenSettings = onOpenSettings
+                )
             },
-            label = "listEmptyTransition"
-        ) { isEmpty ->
-            if (isEmpty) {
-                EmptyState(modifier = Modifier.padding(padding))
-            } else {
-                LazyColumn(
-                    state           = listState,
-                    modifier        = Modifier
-                        .padding(padding)
-                        .fillMaxSize(),
-                    contentPadding  = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+            floatingActionButton = {
+                // Pill-shaped glass FAB
+                val scale by animateFloatAsState(
+                    targetValue = if (expanded) 1f else 0.95f,
+                    label = "fabScale"
+                )
+                GlassCard(
+                    modifier = Modifier
+                        .graphicsLayer { scaleX = scale; scaleY = scale }
+                        .height(56.dp)
+                        .clickable { showAddTaskSheet = true },
+                    glassAlpha = 0.85f,
+                    borderAlpha = 0.3f,
+                    blurRadius = 30.dp
                 ) {
-                    items(tasks, key = { it.id }) { task ->
-                        TaskItem(
-                            task     = task,
-                            onFinish = { viewModel.finishTask(task) },
-                            onDelete = { viewModel.deleteTask(task) },
-                            // animateItemPlacement works with Compose 1.6.x (BOM 2024.02)
-                            modifier = Modifier.animateItemPlacement(
-                                animationSpec = spring(
-                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                    stiffness    = Spring.StiffnessMediumLow
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(GlassTheme.accentPurple, Color(0xFF3B82F6))
                                 )
                             )
-                        )
+                            .padding(horizontal = if (expanded) 24.dp else 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                            AnimatedVisibility(visible = expanded) {
+                                Row {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("New Task", color = Color.White, fontWeight = FontWeight.SemiBold)
+                                }
+                            }
+                        }
                     }
-                    // bottom spacer so last card clears the FAB
-                    item { Spacer(modifier = Modifier.height(80.dp)) }
                 }
             }
-        }
-
-        if (showAddTaskDialog) {
-            AddTaskDialog(
-                onDismiss = { showAddTaskDialog = false },
-                onAdd     = { title, startDate, endDate, interval ->
-                    viewModel.addTask(title, startDate, endDate, interval)
-                    showAddTaskDialog = false
+        ) { padding ->
+            AnimatedContent(
+                targetState = tasks.isEmpty(),
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(300)) togetherWith
+                            fadeOut(animationSpec = tween(200))
+                },
+                label = "listEmptyTransition"
+            ) { isEmpty ->
+                if (isEmpty) {
+                    EmptyState(modifier = Modifier.padding(padding))
+                } else {
+                    LazyColumn(
+                        state           = listState,
+                        modifier        = Modifier
+                            .padding(padding)
+                            .fillMaxSize(),
+                        contentPadding  = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(tasks, key = { it.id }) { task ->
+                            TaskItem(
+                                task     = task,
+                                onFinish = { viewModel.finishTask(task) },
+                                onDelete = { viewModel.deleteTask(task) },
+                                modifier = Modifier.animateItemPlacement(
+                                    animationSpec = spring(
+                                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                                        stiffness    = Spring.StiffnessMediumLow
+                                    )
+                                )
+                            )
+                        }
+                        item { Spacer(modifier = Modifier.height(80.dp)) }
+                    }
                 }
-            )
+            }
+
+            if (showAddTaskSheet) {
+                AddTaskBottomSheet(
+                    onDismiss = { showAddTaskSheet = false },
+                    onAdd     = { title, startDate, endDate, interval ->
+                        viewModel.addTask(title, startDate, endDate, interval)
+                        showAddTaskSheet = false
+                    }
+                )
+            }
         }
     }
 }
@@ -176,113 +240,74 @@ fun TaskApp(
 // ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
-fun GradientHeader(
+fun GlassTopBar(
     taskCount: Int,
     darkTheme: Boolean,
     onToggleTheme: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
-    val gradientColors = if (darkTheme)
-        listOf(Color(0xFF2D1A6B), Color(0xFF4527A0), Color(0xFF1C1B2E))
-    else
-        listOf(Color(0xFF5C35D9), Color(0xFF7C4DFF), Color(0xFFEDE7FF))
-
-    Box(
+    // Frosted glass top bar
+    GlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                Brush.linearGradient(
-                    colors = gradientColors,
-                    start  = Offset(0f, 0f),
-                    end    = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
-                )
-            )
-            .padding(horizontal = 20.dp, vertical = 20.dp)
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+        glassAlpha = 0.08f,
+        borderAlpha = 0.15f,
+        blurRadius = 30.dp
     ) {
-        Column {
-            Row(
-                verticalAlignment    = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(42.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector        = Icons.Filled.Notifications,
-                            contentDescription = null,
-                            tint               = Color.White,
-                            modifier           = Modifier.size(24.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(
-                            text       = "Task Reminder",
-                            fontSize   = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color      = Color.White
-                        )
-                        Text(
-                            text     = "Stay on track ✨",
-                            fontSize = 13.sp,
-                            color    = Color.White.copy(alpha = 0.7f)
-                        )
-                    }
-                }
-                Row {
-                    IconButton(
-                        onClick  = onOpenSettings,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.15f))
-                    ) {
-                        Icon(
-                            imageVector        = Icons.Outlined.Settings,
-                            contentDescription = "Settings",
-                            tint               = Color.White
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(
-                        onClick  = onToggleTheme,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.15f))
-                    ) {
-                        Icon(
-                            imageVector        = if (darkTheme) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
-                            contentDescription = "Toggle theme",
-                            tint               = Color.White
-                        )
-                    }
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                val gradientBrush = Brush.horizontalGradient(
+                    colors = listOf(GlassTheme.accentPurple, GlassTheme.accentCyan)
+                )
+                Text(
+                    text = "My Tasks",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    style = androidx.compose.ui.text.TextStyle(brush = gradientBrush)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "$taskCount tasks due today",
+                    fontSize = 13.sp,
+                    color = GlassTheme.textSecondary
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Stat row
-            Row(
-                modifier              = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                StatChip(
-                    label = "$taskCount Active",
-                    icon  = Icons.Filled.CheckCircle,
-                    tint  = Mint,
-                    modifier = Modifier.weight(1f)
-                )
-                StatChip(
-                    label = "Reminders On",
-                    icon  = Icons.Filled.Alarm,
-                    tint  = Amber,
-                    modifier = Modifier.weight(1f)
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlassCard(
+                    modifier = Modifier.size(42.dp),
+                    glassAlpha = 0.15f,
+                    borderAlpha = 0.3f
+                ) {
+                    IconButton(onClick = onOpenSettings, modifier = Modifier.fillMaxSize()) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            tint = GlassTheme.textPrimary
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                GlassCard(
+                    modifier = Modifier.size(42.dp),
+                    glassAlpha = 0.15f,
+                    borderAlpha = 0.3f
+                ) {
+                    IconButton(onClick = onToggleTheme, modifier = Modifier.fillMaxSize()) {
+                        Icon(
+                            imageVector = if (darkTheme) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
+                            contentDescription = "Toggle theme",
+                            tint = GlassTheme.textPrimary
+                        )
+                    }
+                }
             }
         }
     }
@@ -315,52 +340,64 @@ fun StatChip(
 
 @Composable
 fun EmptyState(modifier: Modifier = Modifier) {
-    Column(
-        modifier              = modifier.fillMaxSize(),
-        horizontalAlignment   = Alignment.CenterHorizontally,
-        verticalArrangement   = Arrangement.Center
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        // Pulsing ring animation
-        val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-        val scale by infiniteTransition.animateFloat(
-            initialValue = 0.95f, targetValue = 1.05f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1200, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse
-            ), label = "scale"
-        )
-
-        Box(
-            modifier         = Modifier
-                .graphicsLayer { scaleX = scale; scaleY = scale }
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center
+        GlassCard(
+            modifier = Modifier.padding(32.dp),
+            glassAlpha = 0.08f,
+            borderAlpha = 0.2f
         ) {
-            Icon(
-                imageVector        = Icons.Outlined.AssignmentLate,
-                contentDescription = null,
-                tint               = MaterialTheme.colorScheme.primary,
-                modifier           = Modifier.size(56.dp)
-            )
+            Column(
+                modifier = Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                // Pulsing Checkmark FastOutSlowIn
+                val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+                val scale by infiniteTransition.animateFloat(
+                    initialValue = 0.9f, targetValue = 1.1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(1500, easing = FastOutSlowInEasing),
+                        repeatMode = RepeatMode.Reverse
+                    ), label = "scale"
+                )
+
+                Box(
+                    modifier = Modifier
+                        .graphicsLayer { scaleX = scale; scaleY = scale }
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(GlassTheme.accentPurple.copy(alpha = 0.2f))
+                        .border(1.dp, GlassTheme.accentPurple.copy(alpha = 0.5f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CheckCircleOutline,
+                        contentDescription = null,
+                        tint = GlassTheme.accentCyan,
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "No tasks yet",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = GlassTheme.textPrimary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Tap + to add your first task",
+                    fontSize = 14.sp,
+                    color = GlassTheme.textSecondary,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text       = "No tasks yet!",
-            style      = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color      = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text  = "Tap the button below to add\nyour first reminder",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
     }
 }
 
@@ -368,6 +405,7 @@ fun EmptyState(modifier: Modifier = Modifier) {
 // Task Card
 // ─────────────────────────────────────────────────────────────────────────────
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskItem(
     task: Task,
@@ -381,143 +419,186 @@ fun TaskItem(
 
     val daysLeft = TimeUnit.MILLISECONDS.toDays(task.endDate - System.currentTimeMillis()).coerceAtLeast(0)
     val accentColor = when {
-        daysLeft <= 1  -> Coral
-        daysLeft <= 3  -> Amber
-        else           -> Mint
+        daysLeft <= 1  -> GlassTheme.priorityHigh
+        daysLeft <= 3  -> GlassTheme.priorityMed
+        else           -> GlassTheme.priorityLow
     }
-    val chipLabel = when {
-        daysLeft == 0L -> "Due today"
-        daysLeft == 1L -> "1 day left"
-        else           -> "$daysLeft days left"
-    }
+    
+    var isChecked by remember { mutableStateOf(false) }
 
-    Card(
-        modifier  = modifier.fillMaxWidth(),
-        shape     = RoundedCornerShape(16.dp),
-        colors    = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            // Colored left accent bar
-            Box(
-                modifier = Modifier
-                    .width(5.dp)
-                    .fillMaxHeight()
-                    .background(
-                        Brush.verticalGradient(listOf(accentColor, accentColor.copy(alpha = 0.4f))),
-                        RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                    )
-            )
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            if (it == SwipeToDismissBoxValue.EndToStart) {
+                onDelete()
+                true
+            } else false
+        }
+    )
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 14.dp, top = 14.dp, end = 8.dp, bottom = 14.dp)
-            ) {
-                // Title + chip row
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        backgroundContent = {
+            val direction = dismissState.dismissDirection
+            if (direction == SwipeToDismissBoxValue.EndToStart) {
+                GlassCard(
+                    modifier = Modifier.fillMaxSize(),
+                    glassAlpha = 0.2f,
+                    borderAlpha = 0f
                 ) {
-                    Text(
-                        text       = task.title,
-                        style      = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color      = MaterialTheme.colorScheme.onSurface,
-                        maxLines   = 1,
-                        overflow   = TextOverflow.Ellipsis,
-                        modifier   = Modifier.weight(1f)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    // Days-remaining chip
-                    Surface(
-                        color  = accentColor.copy(alpha = 0.15f),
-                        shape  = RoundedCornerShape(50),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(GlassTheme.priorityHigh.copy(alpha = 0.4f))
+                            .padding(end = 20.dp),
+                        contentAlignment = Alignment.CenterEnd
                     ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+        },
+        modifier = modifier.fillMaxWidth()
+    ) {
+        val targetAlpha = if (isChecked) 0.4f else 1f
+        val animatedAlpha by animateFloatAsState(targetValue = targetAlpha, label = "alpha")
+
+        GlassCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .graphicsLayer { alpha = animatedAlpha },
+            glassAlpha = 0.08f,
+            borderAlpha = 0.22f,
+            blurRadius = 20.dp
+        ) {
+            Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+                // Colored left accent bar
+                Box(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .fillMaxHeight()
+                        .background(
+                            Brush.verticalGradient(listOf(accentColor, accentColor.copy(alpha = 0.4f))),
+                            RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
+                        )
+                )
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 14.dp, top = 14.dp, end = 8.dp, bottom = 14.dp)
+                ) {
+                    // Title
+                    Text(
+                        text = task.title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = GlassTheme.textPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Date range row
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Outlined.CalendarMonth,
+                            contentDescription = null,
+                            tint = GlassTheme.textSecondary,
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text     = chipLabel,
-                            fontSize = 11.sp,
-                            color    = accentColor,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                            text = "$startStr → $endStr",
+                            fontSize = 12.sp,
+                            color = GlassTheme.textSecondary
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Interval row
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Outlined.Schedule,
+                            contentDescription = null,
+                            tint = GlassTheme.textSecondary,
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Every ${task.intervalHours} hr${if (task.intervalHours != 1) "s" else ""}",
+                            fontSize = 12.sp,
+                            color = GlassTheme.textSecondary
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(6.dp))
-
-                // Date range row
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Outlined.CalendarMonth,
-                        contentDescription = null,
-                        tint     = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(13.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text  = "$startStr → $endStr",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Interval row
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Outlined.Schedule,
-                        contentDescription = null,
-                        tint     = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(13.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text  = "Every ${task.intervalHours} hr${if (task.intervalHours != 1) "s" else ""}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                // Checkbox
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(end = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnimatedCheckbox(
+                        checked = isChecked,
+                        onCheckedChange = { 
+                            isChecked = it
+                            if(it) {
+                                // optional small delay before deleting/finishing
+                                onFinish() 
+                            }
+                        }
                     )
                 }
             }
+        }
+    }
+}
 
-            // Action buttons
-            Column(
-                modifier = Modifier.padding(end = 8.dp, top = 8.dp, bottom = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(
-                    onClick  = onFinish,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(Mint.copy(alpha = 0.15f))
-                ) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = "Finish",
-                        tint     = Mint,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-                IconButton(
-                    onClick  = onDelete,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(Coral.copy(alpha = 0.15f))
-                ) {
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = "Delete",
-                        tint     = Coral,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-            }
+@Composable
+fun AnimatedCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    val scale by animateFloatAsState(
+        targetValue = if (checked) 1.1f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "scale"
+    )
+
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .clip(CircleShape)
+            .background(
+                if (checked) Brush.linearGradient(listOf(GlassTheme.accentPurple, GlassTheme.accentCyan))
+                else SolidColor(Color.Transparent)
+            )
+            .border(
+                width = if (checked) 0.dp else 2.dp,
+                color = if (checked) Color.Transparent else Color.White.copy(alpha = 0.3f),
+                shape = CircleShape
+            )
+            .clickable { onCheckedChange(!checked) },
+        contentAlignment = Alignment.Center
+    ) {
+        androidx.compose.animation.AnimatedVisibility(
+            visible = checked,
+            enter = scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
+            exit = scaleOut() + fadeOut()
+        ) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }
@@ -528,7 +609,7 @@ fun TaskItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskDialog(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -> Unit) {
+fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -> Unit) {
     var title       by remember { mutableStateOf("") }
     var intervalStr by remember { mutableStateOf("2") }
 
@@ -564,110 +645,132 @@ fun AddTaskDialog(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -> Uni
         ) { DatePicker(state = dateStateEnd) }
     }
 
-    AlertDialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        shape     = RoundedCornerShape(24.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
-        title     = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = null,
-                        tint     = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(12.dp))
+        containerColor = Color.Transparent,
+        dragHandle = {
+            Box(
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .width(40.dp)
+                    .height(4.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.3f))
+            )
+        }
+    ) {
+        GlassCard(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            glassAlpha = 0.15f,
+            borderAlpha = 0.3f,
+            blurRadius = 40.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 Text(
                     "New Task",
                     fontWeight = FontWeight.Bold,
-                    style      = MaterialTheme.typography.titleLarge
+                    fontSize = 24.sp,
+                    color = GlassTheme.textPrimary
                 )
-            }
-        },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+
                 // Task title field
                 OutlinedTextField(
-                    value         = title,
+                    value = title,
                     onValueChange = { title = it },
-                    label         = { Text("Task title") },
-                    leadingIcon   = { Icon(Icons.Outlined.Notes, contentDescription = null) },
-                    singleLine    = true,
-                    shape         = RoundedCornerShape(14.dp),
-                    modifier      = Modifier.fillMaxWidth()
+                    label = { Text("Task title", color = GlassTheme.textSecondary) },
+                    leadingIcon = { Icon(Icons.Outlined.Notes, contentDescription = null, tint = GlassTheme.textSecondary) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = GlassTheme.accentCyan,
+                        unfocusedBorderColor = Color.White.copy(0.2f),
+                        focusedContainerColor = Color.White.copy(0.07f),
+                        unfocusedContainerColor = Color.White.copy(0.07f),
+                        focusedTextColor = GlassTheme.textPrimary,
+                        unfocusedTextColor = GlassTheme.textPrimary,
+                        cursorColor = GlassTheme.accentCyan
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 // Interval field
                 OutlinedTextField(
-                    value         = intervalStr,
+                    value = intervalStr,
                     onValueChange = { intervalStr = it.filter { c -> c.isDigit() } },
-                    label         = { Text("Reminder interval (hours)") },
-                    leadingIcon   = { Icon(Icons.Outlined.Schedule, contentDescription = null) },
-                    singleLine    = true,
-                    shape         = RoundedCornerShape(14.dp),
-                    modifier      = Modifier.fillMaxWidth()
+                    label = { Text("Reminder interval (hours)", color = GlassTheme.textSecondary) },
+                    leadingIcon = { Icon(Icons.Outlined.Schedule, contentDescription = null, tint = GlassTheme.textSecondary) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = GlassTheme.accentCyan,
+                        unfocusedBorderColor = Color.White.copy(0.2f),
+                        focusedContainerColor = Color.White.copy(0.07f),
+                        unfocusedContainerColor = Color.White.copy(0.07f),
+                        focusedTextColor = GlassTheme.textPrimary,
+                        unfocusedTextColor = GlassTheme.textPrimary,
+                        cursorColor = GlassTheme.accentCyan
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                // Date section label
                 Text(
-                    "Schedule",
-                    style      = MaterialTheme.typography.labelLarge,
-                    color      = MaterialTheme.colorScheme.primary,
+                    "SCHEDULE",
+                    fontSize = 13.sp,
+                    letterSpacing = 1.5.sp,
+                    color = Color.White.copy(0.4f),
                     fontWeight = FontWeight.SemiBold
                 )
 
-                // Start date chip
+                // Start date
                 DatePickerButton(
-                    label    = "Start date",
-                    dateStr  = startStr,
-                    icon     = Icons.Outlined.CalendarMonth,
-                    onClick  = { showStartPicker = true }
+                    label = "Start date",
+                    dateStr = startStr,
+                    icon = Icons.Outlined.CalendarMonth,
+                    onClick = { showStartPicker = true }
                 )
 
-                // End date chip
+                // End date
                 DatePickerButton(
-                    label    = "End date",
-                    dateStr  = endStr,
-                    icon     = Icons.Outlined.EventBusy,
-                    onClick  = { showEndPicker = true }
+                    label = "End date",
+                    dateStr = endStr,
+                    icon = Icons.Outlined.EventBusy,
+                    onClick = { showEndPicker = true }
                 )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    val interval = intervalStr.toIntOrNull() ?: 2
-                    val start    = dateStateStart.selectedDateMillis ?: System.currentTimeMillis()
-                    val end      = dateStateEnd.selectedDateMillis   ?: (System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L)
-                    if (title.isNotBlank() && interval > 0) {
-                        onAdd(title, start, end, interval)
+
+                Button(
+                    onClick = {
+                        val interval = intervalStr.toIntOrNull() ?: 2
+                        val start    = dateStateStart.selectedDateMillis ?: System.currentTimeMillis()
+                        val end      = dateStateEnd.selectedDateMillis   ?: (System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L)
+                        if (title.isNotBlank() && interval > 0) {
+                            onAdd(title, start, end, interval)
+                        }
+                    },
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Brush.horizontalGradient(listOf(GlassTheme.accentPurple, GlassTheme.accentCyan))),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Save Task", fontWeight = FontWeight.SemiBold, color = Color.White)
                     }
-                },
-                shape    = RoundedCornerShape(50),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null)
-                Spacer(modifier = Modifier.width(6.dp))
-                Text("Add Task", fontWeight = FontWeight.SemiBold)
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick  = onDismiss,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Cancel")
+                }
+                
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    )
+    }
 }
 
 @Composable
@@ -678,11 +781,11 @@ fun DatePickerButton(
     onClick: () -> Unit
 ) {
     Surface(
-        onClick      = onClick,
-        shape        = RoundedCornerShape(14.dp),
-        color        = MaterialTheme.colorScheme.surfaceVariant,
-        tonalElevation = 2.dp,
-        modifier     = Modifier.fillMaxWidth()
+        onClick = onClick,
+        shape = RoundedCornerShape(14.dp),
+        color = Color.White.copy(alpha = 0.07f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(0.2f)),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -691,27 +794,27 @@ fun DatePickerButton(
             Icon(
                 icon,
                 contentDescription = null,
-                tint     = MaterialTheme.colorScheme.primary,
+                tint = GlassTheme.accentCyan,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     label,
-                    style  = MaterialTheme.typography.labelSmall,
-                    color  = MaterialTheme.colorScheme.onSurfaceVariant
+                    fontSize = 12.sp,
+                    color = GlassTheme.textSecondary
                 )
                 Text(
                     dateStr,
-                    style      = MaterialTheme.typography.bodyMedium,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color      = MaterialTheme.colorScheme.onSurface
+                    color = GlassTheme.textPrimary
                 )
             }
             Icon(
                 Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = GlassTheme.textSecondary
             )
         }
     }
