@@ -50,6 +50,24 @@ class TaskReminderApplication : Application() {
 
             notificationManager.createNotificationChannel(reminderChannel)
             notificationManager.createNotificationChannel(alarmChannel)
+
+            // Heads-up channel — used when screen is ON (mimics a toast from above)
+            val notifSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val notifAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+
+            val headsUpChannel = NotificationChannel(
+                "HEADS_UP_CHANNEL",
+                "Heads-Up Reminders",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Pop-up banner when phone is in use"
+                enableVibration(true)
+                setSound(notifSoundUri, notifAttributes)
+            }
+            notificationManager.createNotificationChannel(headsUpChannel)
         }
     }
 }

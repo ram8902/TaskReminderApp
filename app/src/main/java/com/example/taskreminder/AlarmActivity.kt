@@ -162,13 +162,7 @@ class AlarmActivity : ComponentActivity() {
         }
     }
 
-    /** Power button → screen turns off → activity loses focus → stop alarm */
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus) {
-            stopAlarm()
-        }
-    }
+    /** Power button dismisses via volume/stop button instead */
 
     override fun onDestroy() {
         super.onDestroy()

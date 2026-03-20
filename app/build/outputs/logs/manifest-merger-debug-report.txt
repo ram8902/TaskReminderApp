@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-108:12
-INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-108:12
-INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-108:12
-INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-108:12
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-123:12
+INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-123:12
+INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-123:12
+INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:2:1-123:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\vegeta\.gradle\caches\transforms-3\62bbdc0f7bf058bff2448ddc7bc0d8e3\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\vegeta\.gradle\caches\transforms-3\14f9a99e6c6a0abccff325aad3fd59d4\transformed\constraintlayout-2.0.1\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\vegeta\.gradle\caches\transforms-3\6716a6eda750f25d304814671c1f8c29\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -116,9 +116,13 @@ MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\tr
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\transforms-3\3d0f72159b9c31c63878be9fe67d87d2\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 	android:name
 		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:12:22-65
+uses-permission#android.permission.SCHEDULE_EXACT_ALARM
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:13:5-79
+	android:name
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:13:22-76
 application
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:14:5-106:19
-INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:14:5-106:19
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:15:5-121:19
+INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:15:5-121:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\vegeta\.gradle\caches\transforms-3\62bbdc0f7bf058bff2448ddc7bc0d8e3\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\vegeta\.gradle\caches\transforms-3\62bbdc0f7bf058bff2448ddc7bc0d8e3\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\vegeta\.gradle\caches\transforms-3\14f9a99e6c6a0abccff325aad3fd59d4\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
@@ -148,141 +152,159 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\vegeta\.gradle\cac
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] C:\Users\vegeta\.gradle\caches\transforms-3\c02386541e26a2dac5dac1b42f507e96\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:22:9-35
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:23:9-35
 	android:label
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:20:9-41
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:21:9-41
 	android:fullBackupContent
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:18:9-54
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:19:9-54
 	android:roundIcon
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:21:9-54
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:22:9-54
 	tools:targetApi
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:24:9-29
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:25:9-29
 	android:icon
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:19:9-49
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:20:9-49
 	android:allowBackup
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:16:9-35
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:17:9-35
 	android:theme
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:23:9-53
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:24:9-53
 	android:dataExtractionRules
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:17:9-65
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:18:9-65
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:15:9-48
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:16:9-48
 activity#com.example.taskreminder.MainActivity
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:26:9-34:20
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:27:9-35:20
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:28:13-36
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:29:13-36
 	android:theme
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:29:13-57
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:30:13-57
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:27:13-41
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:28:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:30:13-33:29
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:31:13-34:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:31:17-69
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:32:17-69
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:31:25-66
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:32:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:32:17-77
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:33:17-77
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:32:27-74
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:33:27-74
 activity#com.example.taskreminder.AlarmActivity
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:37:9-43:60
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:38:9-44:60
 	android:turnScreenOn
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:42:13-40
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:43:13-40
 	android:showWhenLocked
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:41:13-42
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:42:13-42
 	android:launchMode
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:40:13-48
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:41:13-48
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:39:13-37
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:40:13-37
 	android:theme
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:43:13-57
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:44:13-57
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:38:13-42
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:39:13-42
 activity#com.example.taskreminder.SettingsActivity
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:45:9-48:60
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:46:9-49:60
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:47:13-37
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:48:13-37
 	android:theme
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:48:13-57
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:49:13-57
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:46:13-45
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:47:13-45
 activity#com.example.taskreminder.ConfirmTaskActivity
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:51:9-57:69
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:52:9-58:69
 	android:excludeFromRecents
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:54:13-46
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:55:13-46
 	android:launchMode
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:55:13-48
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:56:13-48
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:53:13-37
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:54:13-37
 	android:theme
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:57:13-66
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:58:13-66
 	android:taskAffinity
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:56:13-36
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:57:13-36
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:52:13-48
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:53:13-48
 activity#com.example.taskreminder.QuickAddActivity
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:60:9-67:69
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:61:9-68:69
 	android:excludeFromRecents
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:63:13-46
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:64:13-46
 	android:launchMode
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:64:13-43
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:65:13-43
 	android:windowSoftInputMode
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:66:13-68
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:67:13-68
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:62:13-36
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:63:13-36
 	android:theme
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:67:13-66
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:68:13-66
 	android:taskAffinity
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:65:13-36
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:66:13-36
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:61:13-45
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:62:13-45
 receiver#com.example.taskreminder.widget.SingleTaskWidgetProvider
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:70:9-79:20
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:71:9-80:20
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:72:13-36
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:73:13-36
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:71:13-60
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:72:13-60
 intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:73:13-75:29
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:74:13-76:29
 action#android.appwidget.action.APPWIDGET_UPDATE
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:74:17-84
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:75:17-84
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:74:25-81
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:75:25-81
 meta-data#android.appwidget.provider
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:76:13-78:67
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:77:13-79:67
 	android:resource
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:78:17-64
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:79:17-64
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:77:17-58
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:78:17-58
 receiver#com.example.taskreminder.widget.TaskListWidgetProvider
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:81:9-90:20
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:82:9-91:20
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:83:13-36
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:84:13-36
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:82:13-58
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:83:13-58
 service#com.example.taskreminder.widget.TaskListWidgetService
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:92:9-94:72
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:93:9-95:72
 	android:permission
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:94:13-69
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:95:13-69
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:93:13-57
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:94:13-57
 receiver#com.example.taskreminder.widget.WidgetActionReceiver
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:96:9-103:20
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:97:9-104:20
 	android:exported
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:98:13-37
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:99:13-37
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:97:13-56
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:98:13-56
 intent-filter#action:name:com.example.taskreminder.widget.ACTION_MARK_TASK_DONE+action:name:com.example.taskreminder.widget.ACTION_TOGGLE_DARK_MODE
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:99:13-102:29
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:100:13-103:29
 action#com.example.taskreminder.widget.ACTION_MARK_TASK_DONE
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:100:17-96
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:101:17-96
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:100:25-93
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:101:25-93
 action#com.example.taskreminder.widget.ACTION_TOGGLE_DARK_MODE
-ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:101:17-98
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:102:17-98
 	android:name
-		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:101:25-95
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:102:25-95
+receiver#com.example.taskreminder.worker.AlarmReceiver
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:107:9-109:40
+	android:exported
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:109:13-37
+	android:name
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:108:13-49
+receiver#com.example.taskreminder.worker.BootReceiver
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:112:9-118:20
+	android:exported
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:114:13-37
+	android:name
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:113:13-48
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:115:13-117:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:116:17-79
+	android:name
+		ADDED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml:116:25-76
 uses-sdk
 INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\vegeta\Desktop\phone apps\TaskReminderApp\app\src\main\AndroidManifest.xml
@@ -643,10 +665,6 @@ ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\tra
 		ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\transforms-3\3d0f72159b9c31c63878be9fe67d87d2\transformed\work-runtime-2.9.0\AndroidManifest.xml:111:13-88
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
 ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\transforms-3\3d0f72159b9c31c63878be9fe67d87d2\transformed\work-runtime-2.9.0\AndroidManifest.xml:116:13-120:29
-action#android.intent.action.BOOT_COMPLETED
-ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\transforms-3\3d0f72159b9c31c63878be9fe67d87d2\transformed\work-runtime-2.9.0\AndroidManifest.xml:117:17-79
-	android:name
-		ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\transforms-3\3d0f72159b9c31c63878be9fe67d87d2\transformed\work-runtime-2.9.0\AndroidManifest.xml:117:25-76
 action#android.intent.action.TIME_SET
 ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\vegeta\.gradle\caches\transforms-3\3d0f72159b9c31c63878be9fe67d87d2\transformed\work-runtime-2.9.0\AndroidManifest.xml:118:17-73
 	android:name
