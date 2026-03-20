@@ -9,13 +9,15 @@ import java.util.concurrent.TimeUnit
 
 object ReminderManager {
 
-    fun scheduleTaskReminder(context: Context, taskId: Int, intervalHours: Int) {
+    fun scheduleTaskReminder(context: Context, taskId: Int, intervalHours: Int, intervalMinutes: Int) {
+        val totalMinutes = (intervalHours * 60L) + intervalMinutes
         // WorkManager enforces a minimum repetition interval of 15 minutes.
-        // Assuming intervalHours >= 1 based on UI constraints.
+        val safeMinutes = maxOf(15L, totalMinutes)
+
         val workRequest = PeriodicWorkRequestBuilder<TaskReminderWorker>(
-            intervalHours.toLong(), TimeUnit.HOURS
+            safeMinutes, TimeUnit.MINUTES
         )
-            .setInitialDelay(intervalHours.toLong(), TimeUnit.HOURS) // first ring after N hours
+            .setInitialDelay(safeMinutes, TimeUnit.MINUTES) // first ring after N minutes
             .setInputData(workDataOf("TASK_ID" to taskId))
             .addTag("task_$taskId")
             .build()

@@ -59,6 +59,8 @@ import androidx.compose.ui.text.withStyle
 import com.example.taskreminder.ui.GlassTheme
 import com.example.taskreminder.ui.GlassCard
 import com.example.taskreminder.ui.AnimatedGlassBackground
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 
 class MainActivity : ComponentActivity() {
 
@@ -225,8 +227,8 @@ fun TaskApp(
             if (showAddTaskSheet) {
                 AddTaskBottomSheet(
                     onDismiss = { showAddTaskSheet = false },
-                    onAdd     = { title, startDate, endDate, interval ->
-                        viewModel.addTask(title, startDate, endDate, interval)
+                    onAdd     = { title, startDate, endDate, intervalHours, intervalMinutes ->
+                        viewModel.addTask(title, startDate, endDate, intervalHours, intervalMinutes)
                         showAddTaskSheet = false
                     }
                 )
@@ -425,6 +427,74 @@ fun TaskItem(
     }
     
     var isChecked by remember { mutableStateOf(false) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
+    if (showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showConfirmDialog = false
+                isChecked = false
+            },
+            containerColor = if (GlassTheme.isDark) Color(0xFF1C1B2E) else Color(0xFFFAF9F7),
+            shape = RoundedCornerShape(20.dp),
+            icon = {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(GlassTheme.priorityLow.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Check,
+                        contentDescription = null,
+                        tint = GlassTheme.priorityLow,
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
+            },
+            title = {
+                Text(
+                    "Complete task?",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 17.sp,
+                    color = GlassTheme.textPrimary
+                )
+            },
+            text = {
+                Text(
+                    "\"${task.title}\" will be marked as done and reminders will stop.",
+                    fontSize = 14.sp,
+                    color = GlassTheme.textSecondary,
+                    lineHeight = 20.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showConfirmDialog = false
+                        onFinish()
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = GlassTheme.priorityLow
+                    )
+                ) {
+                    Text("Mark complete", fontWeight = FontWeight.SemiBold, color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showConfirmDialog = false
+                        isChecked = false
+                    }
+                ) {
+                    Text("Cancel", color = GlassTheme.textSecondary)
+                }
+            }
+        )
+    }
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
@@ -532,8 +602,11 @@ fun TaskItem(
                             modifier = Modifier.size(13.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
+                        val hrText = if (task.intervalHours > 0) "${task.intervalHours} hr${if (task.intervalHours != 1) "s" else ""}" else ""
+                        val minText = if (task.intervalMinutes > 0) "${task.intervalMinutes} min" else ""
+                        val intervalText = listOf(hrText, minText).filter { it.isNotEmpty() }.joinToString(" ")
                         Text(
-                            text = "Every ${task.intervalHours} hr${if (task.intervalHours != 1) "s" else ""}",
+                            text = "Every $intervalText",
                             fontSize = 12.sp,
                             color = GlassTheme.textSecondary
                         )
@@ -549,11 +622,10 @@ fun TaskItem(
                 ) {
                     AnimatedCheckbox(
                         checked = isChecked,
-                        onCheckedChange = { 
+                        onCheckedChange = {
                             isChecked = it
-                            if(it) {
-                                // optional small delay before deleting/finishing
-                                onFinish() 
+                            if (it) {
+                                showConfirmDialog = true
                             }
                         }
                     )
@@ -631,9 +703,10 @@ private object FlatSheet {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -> Unit) {
+fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int, Int) -> Unit) {
     var title       by remember { mutableStateOf("") }
-    var intervalStr by remember { mutableStateOf("2") }
+    var intervalStr by remember { mutableStateOf("0") }
+    var minutesStr  by remember { mutableStateOf("0") }
     val isDark      = GlassTheme.isDark
 
     val dateStateStart = rememberDatePickerState(
@@ -723,80 +796,7 @@ fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -
                 )
             }
 
-            // ── Section label ────────────────────────────────────────────────
-            Text(
-                "DETAILS",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.2.sp,
-                color = labelColor,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            // ── Task title field ─────────────────────────────────────────────
-            OutlinedTextField(
-                value         = title,
-                onValueChange = { title = it },
-                placeholder   = { Text("What do you need to do?", color = labelColor, fontSize = 14.sp) },
-                singleLine    = true,
-                shape         = RoundedCornerShape(10.dp),
-                colors        = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor   = accent,
-                    unfocusedBorderColor = fBorder,
-                    focusedContainerColor   = fBg,
-                    unfocusedContainerColor = fBg,
-                    focusedTextColor    = titleColor,
-                    unfocusedTextColor  = titleColor,
-                    cursorColor         = accent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp)
-            )
-
-            // ── Interval field ───────────────────────────────────────────────
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(fBg)
-                    .border(1.dp, fBorder, RoundedCornerShape(10.dp))
-                    .padding(horizontal = 16.dp, vertical = 14.dp)
-            ) {
-                Icon(
-                    Icons.Outlined.Schedule,
-                    contentDescription = null,
-                    tint   = accent,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text("Remind every", fontSize = 14.sp, color = titleColor, modifier = Modifier.weight(1f))
-                OutlinedTextField(
-                    value         = intervalStr,
-                    onValueChange = { intervalStr = it.filter { c -> c.isDigit() } },
-                    singleLine    = true,
-                    shape         = RoundedCornerShape(8.dp),
-                    colors        = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor      = accent,
-                        unfocusedBorderColor    = fBorder,
-                        focusedContainerColor   = sheetBg,
-                        unfocusedContainerColor = sheetBg,
-                        focusedTextColor        = titleColor,
-                        unfocusedTextColor      = titleColor,
-                        cursorColor             = accent
-                    ),
-                    modifier = Modifier.width(64.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("hr", fontSize = 14.sp, color = labelColor)
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             // ── Divider + section label ──────────────────────────────────────
-            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(divider))
-            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 "SCHEDULE",
                 fontSize = 11.sp,
@@ -837,16 +837,114 @@ fun AddTaskBottomSheet(onDismiss: () -> Unit, onAdd: (String, Long, Long, Int) -
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ── Interval field ───────────────────────────────────────────────
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(fBg)
+                    .border(1.dp, fBorder, RoundedCornerShape(10.dp))
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+            ) {
+                Icon(
+                    Icons.Outlined.Schedule,
+                    contentDescription = null,
+                    tint   = accent,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text("Remind every", fontSize = 14.sp, color = titleColor, modifier = Modifier.weight(1f))
+                
+                OutlinedTextField(
+                    value         = intervalStr,
+                    onValueChange = { intervalStr = it.filter { c -> c.isDigit() }.take(2) },
+                    singleLine    = true,
+                    shape         = RoundedCornerShape(8.dp),
+                    colors        = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor      = accent,
+                        unfocusedBorderColor    = fBorder,
+                        focusedContainerColor   = sheetBg,
+                        unfocusedContainerColor = sheetBg,
+                        focusedTextColor        = titleColor,
+                        unfocusedTextColor      = titleColor,
+                        cursorColor             = accent
+                    ),
+                    modifier = Modifier.width(52.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("hr", fontSize = 14.sp, color = labelColor)
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                OutlinedTextField(
+                    value         = minutesStr,
+                    onValueChange = { minutesStr = it.filter { c -> c.isDigit() }.take(2) },
+                    singleLine    = true,
+                    shape         = RoundedCornerShape(8.dp),
+                    colors        = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor      = accent,
+                        unfocusedBorderColor    = fBorder,
+                        focusedContainerColor   = sheetBg,
+                        unfocusedContainerColor = sheetBg,
+                        focusedTextColor        = titleColor,
+                        unfocusedTextColor      = titleColor,
+                        cursorColor             = accent
+                    ),
+                    modifier = Modifier.width(52.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("min", fontSize = 14.sp, color = labelColor)
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(divider))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ── Section label ────────────────────────────────────────────────
+            Text(
+                "DETAILS",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.2.sp,
+                color = labelColor,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // ── Task title field ─────────────────────────────────────────────
+            OutlinedTextField(
+                value         = title,
+                onValueChange = { title = it },
+                placeholder   = { Text("What do you need to do?", color = labelColor, fontSize = 14.sp) },
+                singleLine    = true,
+                shape         = RoundedCornerShape(10.dp),
+                colors        = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor   = accent,
+                    unfocusedBorderColor = fBorder,
+                    focusedContainerColor   = fBg,
+                    unfocusedContainerColor = fBg,
+                    focusedTextColor    = titleColor,
+                    unfocusedTextColor  = titleColor,
+                    cursorColor         = accent
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp)
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // ── Save button ──────────────────────────────────────────────────
-            val canSave = title.isNotBlank() && (intervalStr.toIntOrNull() ?: 0) > 0
+            val canSave = title.isNotBlank() && ((intervalStr.toIntOrNull() ?: 0) > 0 || (minutesStr.toIntOrNull() ?: 0) > 0)
             Button(
                 onClick = {
-                    val interval = intervalStr.toIntOrNull() ?: 2
+                    val intervalHours   = intervalStr.toIntOrNull() ?: 0
+                    val intervalMinutes = minutesStr.toIntOrNull() ?: 0
                     val start    = dateStateStart.selectedDateMillis ?: System.currentTimeMillis()
                     val end      = dateStateEnd.selectedDateMillis   ?: (System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L)
-                    if (canSave) onAdd(title, start, end, interval)
+                    if (canSave) onAdd(title, start, end, intervalHours, intervalMinutes)
                 },
                 enabled  = canSave,
                 shape    = RoundedCornerShape(10.dp),

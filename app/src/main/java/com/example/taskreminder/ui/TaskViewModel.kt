@@ -44,13 +44,14 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         appWidgetManager.notifyAppWidgetViewDataChanged(listWidgetIds, R.id.widget_list_view)
     }
 
-    fun addTask(title: String, startDate: Long, endDate: Long, intervalHours: Int) {
+    fun addTask(title: String, startDate: Long, endDate: Long, intervalHours: Int, intervalMinutes: Int = 0) {
         viewModelScope.launch {
             val task = Task(
                 title = title,
                 startDate = startDate,
                 endDate = endDate,
                 intervalHours = intervalHours,
+                intervalMinutes = intervalMinutes,
                 isActive = true
             )
             val id = taskDao.insertTask(task)
@@ -59,7 +60,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             ReminderManager.scheduleTaskReminder(
                 getApplication<Application>().applicationContext,
                 id.toInt(),
-                intervalHours
+                intervalHours,
+                intervalMinutes
             )
             updateWidgets()
         }

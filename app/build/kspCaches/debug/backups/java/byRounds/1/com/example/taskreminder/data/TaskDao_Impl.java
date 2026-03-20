@@ -45,7 +45,7 @@ public final class TaskDao_Impl implements TaskDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `tasks` (`id`,`title`,`startDate`,`endDate`,`intervalHours`,`isActive`) VALUES (nullif(?, 0),?,?,?,?,?)";
+        return "INSERT OR REPLACE INTO `tasks` (`id`,`title`,`startDate`,`endDate`,`intervalHours`,`intervalMinutes`,`isActive`) VALUES (nullif(?, 0),?,?,?,?,?,?)";
       }
 
       @Override
@@ -56,8 +56,9 @@ public final class TaskDao_Impl implements TaskDao {
         statement.bindLong(3, entity.getStartDate());
         statement.bindLong(4, entity.getEndDate());
         statement.bindLong(5, entity.getIntervalHours());
+        statement.bindLong(6, entity.getIntervalMinutes());
         final int _tmp = entity.isActive() ? 1 : 0;
-        statement.bindLong(6, _tmp);
+        statement.bindLong(7, _tmp);
       }
     };
     this.__deletionAdapterOfTask = new EntityDeletionOrUpdateAdapter<Task>(__db) {
@@ -77,7 +78,7 @@ public final class TaskDao_Impl implements TaskDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `tasks` SET `id` = ?,`title` = ?,`startDate` = ?,`endDate` = ?,`intervalHours` = ?,`isActive` = ? WHERE `id` = ?";
+        return "UPDATE OR ABORT `tasks` SET `id` = ?,`title` = ?,`startDate` = ?,`endDate` = ?,`intervalHours` = ?,`intervalMinutes` = ?,`isActive` = ? WHERE `id` = ?";
       }
 
       @Override
@@ -88,9 +89,10 @@ public final class TaskDao_Impl implements TaskDao {
         statement.bindLong(3, entity.getStartDate());
         statement.bindLong(4, entity.getEndDate());
         statement.bindLong(5, entity.getIntervalHours());
+        statement.bindLong(6, entity.getIntervalMinutes());
         final int _tmp = entity.isActive() ? 1 : 0;
-        statement.bindLong(6, _tmp);
-        statement.bindLong(7, entity.getId());
+        statement.bindLong(7, _tmp);
+        statement.bindLong(8, entity.getId());
       }
     };
   }
@@ -164,6 +166,7 @@ public final class TaskDao_Impl implements TaskDao {
           final int _cursorIndexOfStartDate = CursorUtil.getColumnIndexOrThrow(_cursor, "startDate");
           final int _cursorIndexOfEndDate = CursorUtil.getColumnIndexOrThrow(_cursor, "endDate");
           final int _cursorIndexOfIntervalHours = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalHours");
+          final int _cursorIndexOfIntervalMinutes = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalMinutes");
           final int _cursorIndexOfIsActive = CursorUtil.getColumnIndexOrThrow(_cursor, "isActive");
           final List<Task> _result = new ArrayList<Task>(_cursor.getCount());
           while (_cursor.moveToNext()) {
@@ -178,11 +181,13 @@ public final class TaskDao_Impl implements TaskDao {
             _tmpEndDate = _cursor.getLong(_cursorIndexOfEndDate);
             final int _tmpIntervalHours;
             _tmpIntervalHours = _cursor.getInt(_cursorIndexOfIntervalHours);
+            final int _tmpIntervalMinutes;
+            _tmpIntervalMinutes = _cursor.getInt(_cursorIndexOfIntervalMinutes);
             final boolean _tmpIsActive;
             final int _tmp;
             _tmp = _cursor.getInt(_cursorIndexOfIsActive);
             _tmpIsActive = _tmp != 0;
-            _item = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIsActive);
+            _item = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIntervalMinutes,_tmpIsActive);
             _result.add(_item);
           }
           return _result;
@@ -196,6 +201,49 @@ public final class TaskDao_Impl implements TaskDao {
         _statement.release();
       }
     });
+  }
+
+  @Override
+  public List<Task> getActiveTasksSync() {
+    final String _sql = "SELECT * FROM tasks WHERE isActive = 1";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    __db.assertNotSuspendingTransaction();
+    final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+    try {
+      final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+      final int _cursorIndexOfTitle = CursorUtil.getColumnIndexOrThrow(_cursor, "title");
+      final int _cursorIndexOfStartDate = CursorUtil.getColumnIndexOrThrow(_cursor, "startDate");
+      final int _cursorIndexOfEndDate = CursorUtil.getColumnIndexOrThrow(_cursor, "endDate");
+      final int _cursorIndexOfIntervalHours = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalHours");
+      final int _cursorIndexOfIntervalMinutes = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalMinutes");
+      final int _cursorIndexOfIsActive = CursorUtil.getColumnIndexOrThrow(_cursor, "isActive");
+      final List<Task> _result = new ArrayList<Task>(_cursor.getCount());
+      while (_cursor.moveToNext()) {
+        final Task _item;
+        final int _tmpId;
+        _tmpId = _cursor.getInt(_cursorIndexOfId);
+        final String _tmpTitle;
+        _tmpTitle = _cursor.getString(_cursorIndexOfTitle);
+        final long _tmpStartDate;
+        _tmpStartDate = _cursor.getLong(_cursorIndexOfStartDate);
+        final long _tmpEndDate;
+        _tmpEndDate = _cursor.getLong(_cursorIndexOfEndDate);
+        final int _tmpIntervalHours;
+        _tmpIntervalHours = _cursor.getInt(_cursorIndexOfIntervalHours);
+        final int _tmpIntervalMinutes;
+        _tmpIntervalMinutes = _cursor.getInt(_cursorIndexOfIntervalMinutes);
+        final boolean _tmpIsActive;
+        final int _tmp;
+        _tmp = _cursor.getInt(_cursorIndexOfIsActive);
+        _tmpIsActive = _tmp != 0;
+        _item = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIntervalMinutes,_tmpIsActive);
+        _result.add(_item);
+      }
+      return _result;
+    } finally {
+      _cursor.close();
+      _statement.release();
+    }
   }
 
   @Override
@@ -216,6 +264,7 @@ public final class TaskDao_Impl implements TaskDao {
           final int _cursorIndexOfStartDate = CursorUtil.getColumnIndexOrThrow(_cursor, "startDate");
           final int _cursorIndexOfEndDate = CursorUtil.getColumnIndexOrThrow(_cursor, "endDate");
           final int _cursorIndexOfIntervalHours = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalHours");
+          final int _cursorIndexOfIntervalMinutes = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalMinutes");
           final int _cursorIndexOfIsActive = CursorUtil.getColumnIndexOrThrow(_cursor, "isActive");
           final Task _result;
           if (_cursor.moveToFirst()) {
@@ -229,11 +278,13 @@ public final class TaskDao_Impl implements TaskDao {
             _tmpEndDate = _cursor.getLong(_cursorIndexOfEndDate);
             final int _tmpIntervalHours;
             _tmpIntervalHours = _cursor.getInt(_cursorIndexOfIntervalHours);
+            final int _tmpIntervalMinutes;
+            _tmpIntervalMinutes = _cursor.getInt(_cursorIndexOfIntervalMinutes);
             final boolean _tmpIsActive;
             final int _tmp;
             _tmp = _cursor.getInt(_cursorIndexOfIsActive);
             _tmpIsActive = _tmp != 0;
-            _result = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIsActive);
+            _result = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIntervalMinutes,_tmpIsActive);
           } else {
             _result = null;
           }
@@ -261,6 +312,7 @@ public final class TaskDao_Impl implements TaskDao {
           final int _cursorIndexOfStartDate = CursorUtil.getColumnIndexOrThrow(_cursor, "startDate");
           final int _cursorIndexOfEndDate = CursorUtil.getColumnIndexOrThrow(_cursor, "endDate");
           final int _cursorIndexOfIntervalHours = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalHours");
+          final int _cursorIndexOfIntervalMinutes = CursorUtil.getColumnIndexOrThrow(_cursor, "intervalMinutes");
           final int _cursorIndexOfIsActive = CursorUtil.getColumnIndexOrThrow(_cursor, "isActive");
           final List<Task> _result = new ArrayList<Task>(_cursor.getCount());
           while (_cursor.moveToNext()) {
@@ -275,11 +327,13 @@ public final class TaskDao_Impl implements TaskDao {
             _tmpEndDate = _cursor.getLong(_cursorIndexOfEndDate);
             final int _tmpIntervalHours;
             _tmpIntervalHours = _cursor.getInt(_cursorIndexOfIntervalHours);
+            final int _tmpIntervalMinutes;
+            _tmpIntervalMinutes = _cursor.getInt(_cursorIndexOfIntervalMinutes);
             final boolean _tmpIsActive;
             final int _tmp;
             _tmp = _cursor.getInt(_cursorIndexOfIsActive);
             _tmpIsActive = _tmp != 0;
-            _item = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIsActive);
+            _item = new Task(_tmpId,_tmpTitle,_tmpStartDate,_tmpEndDate,_tmpIntervalHours,_tmpIntervalMinutes,_tmpIsActive);
             _result.add(_item);
           }
           return _result;

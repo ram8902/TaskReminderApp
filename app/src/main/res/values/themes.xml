@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.TaskReminderApp" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+
+    <!-- Translucent theme for QuickAddActivity — floats over home screen
+         but extends DayNight so Compose IME / keyboard works correctly -->
+    <style name="Theme.TaskReminderApp.QuickAdd" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
 </resources>

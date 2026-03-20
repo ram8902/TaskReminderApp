@@ -2937,7 +2937,9 @@ int drawable ic_widget_check 0x7f07009b
 int drawable ic_widget_dot_normal 0x7f07009c
 int drawable ic_widget_dot_overdue 0x7f07009d
 int drawable ic_widget_dot_soon 0x7f07009e
+int drawable ic_widget_moon 0x7f0700ef
 int drawable ic_widget_settings 0x7f07009f
+int drawable ic_widget_sun 0x7f0700f0
 int drawable m3_avd_hide_password 0x7f0700a0
 int drawable m3_avd_show_password 0x7f0700a1
 int drawable m3_bottom_sheet_drag_handle 0x7f0700a2
@@ -3014,9 +3016,13 @@ int drawable test_level_drawable 0x7f0700e8
 int drawable tooltip_frame_dark 0x7f0700e9
 int drawable tooltip_frame_light 0x7f0700ea
 int drawable widget_bg 0x7f0700eb
+int drawable widget_bg_dark 0x7f0700f1
+int drawable widget_bg_light 0x7f0700f2
 int drawable widget_done_btn_bg 0x7f0700ec
 int drawable widget_header_bg 0x7f0700ed
 int drawable widget_icon_btn_bg 0x7f0700ee
+int drawable widget_icon_btn_bg_dark 0x7f0700f3
+int drawable widget_icon_btn_bg_light 0x7f0700f4
 int id ALT 0x7f080000
 int id BOTTOM_END 0x7f080001
 int id BOTTOM_START 0x7f080002
@@ -3474,8 +3480,10 @@ int id view_tree_view_model_store_owner 0x7f0801c5
 int id visible 0x7f0801c6
 int id visible_removing_fragment_view_tag 0x7f0801c7
 int id widget_btn_add 0x7f0801c8
+int id widget_btn_dark_toggle 0x7f0801db
 int id widget_btn_done 0x7f0801c9
 int id widget_container 0x7f0801ca
+int id widget_container_list 0x7f0801dc
 int id widget_divider 0x7f0801cb
 int id widget_empty_view 0x7f0801cc
 int id widget_footer_row 0x7f0801cd
@@ -4560,6 +4568,7 @@ int style Theme_MaterialComponents_Light_NoActionBar_Bridge 0x7f0f0271
 int style Theme_MaterialComponents_NoActionBar 0x7f0f0272
 int style Theme_MaterialComponents_NoActionBar_Bridge 0x7f0f0273
 int style Theme_TaskReminderApp 0x7f0f0274
+int style Theme_TaskReminderApp_QuickAdd 0x7f0f0460
 int style ThemeOverlay_AppCompat 0x7f0f0275
 int style ThemeOverlay_AppCompat_ActionBar 0x7f0f0276
 int style ThemeOverlay_AppCompat_Dark 0x7f0f0277

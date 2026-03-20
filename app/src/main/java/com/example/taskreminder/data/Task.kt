@@ -10,5 +10,6 @@ data class Task(
     val startDate: Long,
     val endDate: Long,
     val intervalHours: Int,
+    val intervalMinutes: Int = 0,
     val isActive: Boolean = true
 )

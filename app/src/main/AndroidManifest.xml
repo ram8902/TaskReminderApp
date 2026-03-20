@@ -47,14 +47,24 @@
             android:exported="false"
             android:theme="@style/Theme.TaskReminderApp" />
 
+        <!-- Confirm task completion dialog launched from widgets -->
+        <activity
+            android:name=".ConfirmTaskActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:theme="@style/Theme.TaskReminderApp.QuickAdd" />
+
         <!-- Floating activity over home screen for quick task creation -->
         <activity
             android:name=".QuickAddActivity"
             android:exported="true"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:taskAffinity=""
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:theme="@style/Theme.TaskReminderApp.QuickAdd" />
 
         <!-- Widgets -->
         <receiver
@@ -88,6 +98,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="com.example.taskreminder.widget.ACTION_MARK_TASK_DONE" />
+                <action android:name="com.example.taskreminder.widget.ACTION_TOGGLE_DARK_MODE" />
             </intent-filter>
         </receiver>
 

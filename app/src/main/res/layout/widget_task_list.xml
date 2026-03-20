@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_bg">
 
+    <!-- Header: label + dark mode toggle + add button -->
     <RelativeLayout
         android:id="@+id/widget_header"
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_alignParentTop="true"
-        android:paddingLeft="16dp"
-        android:paddingRight="12dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="10dp">
 
         <TextView
             android:id="@+id/widget_title"
@@ -22,28 +24,45 @@
             android:textSize="11sp"
             android:textStyle="bold" />
 
+        <!-- Add button -->
         <ImageView
             android:id="@+id/widget_btn_add"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/widget_icon_btn_bg"
             android:contentDescription="Add Task"
             android:padding="6dp"
-            android:src="@drawable/ic_widget_add" />
+            android:src="@drawable/ic_widget_add"
+            android:tint="@color/widget_accent" />
+
+        <!-- Dark mode toggle -->
+        <ImageView
+            android:id="@+id/widget_btn_dark_toggle"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_toStartOf="@id/widget_btn_add"
+            android:layout_marginEnd="6dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/widget_icon_btn_bg"
+            android:contentDescription="Toggle dark mode"
+            android:padding="6dp"
+            android:src="@drawable/ic_widget_moon" />
     </RelativeLayout>
 
-    <ImageView
+    <!-- Hairline divider -->
+    <FrameLayout
         android:id="@+id/widget_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/widget_header"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/widget_divider"
-        android:src="@android:color/transparent" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/widget_divider" />
 
+
+    <!-- Task list -->
     <ListView
         android:id="@+id/widget_list_view"
         android:layout_width="match_parent"
@@ -53,6 +72,7 @@
         android:divider="@color/widget_divider"
         android:dividerHeight="1dp" />
 
+    <!-- Empty state -->
     <LinearLayout
         android:id="@+id/widget_empty_view"
         android:layout_width="match_parent"

@@ -8,12 +8,28 @@
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\layout\\widget_task_list_item.xml"
     },
     {
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_widget_moon.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_widget_moon.xml"
+    },
+    {
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_icon_btn_bg_dark.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_icon_btn_bg_dark.xml"
+    },
+    {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\xml_backup_rules.xml.flat",
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\xml\\backup_rules.xml"
     },
     {
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_bg_light.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_bg_light.xml"
+    },
+    {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\layout_widget_task_list.xml.flat",
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\layout\\widget_task_list.xml"
+    },
+    {
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_widget_sun.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_widget_sun.xml"
     },
     {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\xml_single_task_widget_info.xml.flat",
@@ -44,10 +60,6 @@
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_header_bg.xml"
     },
     {
-        "merged": "com.example.taskreminder.app-merged_res-67:/layout_widget_single_task.xml.flat",
-        "source": "com.example.taskreminder.app-main-69:/layout/widget_single_task.xml"
-    },
-    {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\layout_widget_single_task.xml.flat",
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\layout\\widget_single_task.xml"
     },
@@ -56,40 +68,32 @@
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_done_btn_bg.xml"
     },
     {
-        "merged": "com.example.taskreminder.app-merged_res-67:/drawable_ic_widget_dot_overdue.xml.flat",
-        "source": "com.example.taskreminder.app-main-69:/drawable/ic_widget_dot_overdue.xml"
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_icon_btn_bg_light.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_icon_btn_bg_light.xml"
     },
     {
-        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_widget_add.xml.flat",
-        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_widget_add.xml"
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_bg_dark.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_bg_dark.xml"
     },
     {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_widget_dot_normal.xml.flat",
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_widget_dot_normal.xml"
     },
     {
-        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_icon_btn_bg.xml.flat",
-        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_icon_btn_bg.xml"
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_widget_add.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_widget_add.xml"
     },
     {
-        "merged": "com.example.taskreminder.app-merged_res-67:/layout_widget_task_list_item.xml.flat",
-        "source": "com.example.taskreminder.app-main-69:/layout/widget_task_list_item.xml"
+        "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_icon_btn_bg.xml.flat",
+        "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\widget_icon_btn_bg.xml"
     },
     {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_launcher_new.png.flat",
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_launcher_new.png"
     },
     {
-        "merged": "com.example.taskreminder.app-merged_res-67:/drawable_ic_widget_dot_soon.xml.flat",
-        "source": "com.example.taskreminder.app-main-69:/drawable/ic_widget_dot_soon.xml"
-    },
-    {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_ic_widget_check.xml.flat",
         "source": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-main-69:\\drawable\\ic_widget_check.xml"
-    },
-    {
-        "merged": "com.example.taskreminder.app-merged_res-67:/drawable_ic_widget_dot_normal.xml.flat",
-        "source": "com.example.taskreminder.app-main-69:/drawable/ic_widget_dot_normal.xml"
     },
     {
         "merged": "C:\\Users\\vegeta\\.gradle\\daemon\\8.5\\com.example.taskreminder.app-merged_res-67:\\drawable_widget_bg.xml.flat",

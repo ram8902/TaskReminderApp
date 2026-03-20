@@ -2938,7 +2938,9 @@ drawable ic_widget_check
 drawable ic_widget_dot_normal
 drawable ic_widget_dot_overdue
 drawable ic_widget_dot_soon
+drawable ic_widget_moon
 drawable ic_widget_settings
+drawable ic_widget_sun
 drawable m3_avd_hide_password
 drawable m3_avd_show_password
 drawable m3_bottom_sheet_drag_handle
@@ -3015,9 +3017,13 @@ drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
 drawable widget_bg
+drawable widget_bg_dark
+drawable widget_bg_light
 drawable widget_done_btn_bg
 drawable widget_header_bg
 drawable widget_icon_btn_bg
+drawable widget_icon_btn_bg_dark
+drawable widget_icon_btn_bg_light
 id ALT
 id BOTTOM_END
 id BOTTOM_START
@@ -3475,8 +3481,10 @@ id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
 id widget_btn_add
+id widget_btn_dark_toggle
 id widget_btn_done
 id widget_container
+id widget_container_list
 id widget_divider
 id widget_empty_view
 id widget_footer_row
@@ -4561,6 +4569,7 @@ style Theme_MaterialComponents_Light_NoActionBar_Bridge
 style Theme_MaterialComponents_NoActionBar
 style Theme_MaterialComponents_NoActionBar_Bridge
 style Theme_TaskReminderApp
+style Theme_TaskReminderApp_QuickAdd
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark

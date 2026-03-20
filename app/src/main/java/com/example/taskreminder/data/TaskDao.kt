@@ -19,6 +19,9 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE isActive = 1")
     fun getActiveTasks(): Flow<List<Task>>
 
+    @Query("SELECT * FROM tasks WHERE isActive = 1")
+    fun getActiveTasksSync(): List<Task>
+
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getTaskById(id: Int): Task?
 
