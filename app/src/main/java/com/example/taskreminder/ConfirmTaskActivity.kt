@@ -68,7 +68,15 @@ class ConfirmTaskActivity : ComponentActivity() {
             val task = db.taskDao().getTaskById(taskId) ?: return@launch
             if (!task.isActive) return@launch
 
-            db.taskDao().updateTask(task.copy(isActive = false))
+            db.taskDao().updateTask(task.copy(isActive = false, status = "COMPLETED"))
+            db.taskEventDao().insertTaskEvent(
+                com.example.taskreminder.data.TaskEvent(
+                    taskId = task.id,
+                    taskTitle = task.title,
+                    action = "COMPLETED",
+                    timestamp = System.currentTimeMillis()
+                )
+            )
             ReminderManager.cancelTaskReminder(applicationContext, taskId)
 
             val mgr = AppWidgetManager.getInstance(applicationContext)

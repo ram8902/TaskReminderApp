@@ -25,7 +25,8 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun getTaskById(id: Int): Task?
 
-    @Query("SELECT * FROM tasks ORDER BY startDate ASC")
+    // Pending tasks first, then sorted by urgency (nearest deadline first)
+    @Query("SELECT * FROM tasks ORDER BY CASE status WHEN 'PENDING' THEN 0 ELSE 1 END, endDate ASC")
     fun getAllTasks(): Flow<List<Task>>
 
     @Delete

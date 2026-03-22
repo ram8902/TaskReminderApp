@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; background:transparent; }
+.wrap { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px; position:relative; }
+.chart-box { position:relative; width:220px; height:220px; flex-shrink:0; margin-top: 280px; }
+canvas { width:100% !important; height:100% !important; }
+.center-label { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
+.center-count { font-size:36px; font-weight:700; font-family:sans-serif; }
+.center-sub { font-size:13px; font-family:sans-serif; margin-top:2px; }
+.legend { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:12px; width:100%; max-width:260px; padding:0 24px; }
+.legend-item { display:flex; align-items:center; gap:10px; font-family:sans-serif; }
+.legend-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+.legend-label { font-size:14px; flex:1; }
+.legend-val { font-size:14px; font-weight:600; }
+.legend-pct { font-size:12px; margin-left:4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="chart-box">
+    <canvas id="c"></canvas>
+    <div class="center-label">
+      <div class="center-count" id="totalNum">0</div>
+      <div class="center-sub" id="totalLbl">total</div>
+    </div>
+  </div>
+  <div class="legend" id="legend"></div>
+</div>
+
+<script>
+var SLICES = [
+  { key:'completed', label:'Completed', color:'#4ADE80', text:'#14532d' },
+  { key:'pending',   label:'Pending',   color:'#FACC15', text:'#713f12' },
+  { key:'missed',    label:'Missed',    color:'#F87171', text:'#7f1d1d' }
+];
+
+var STATE = { pending:0, completed:0, missed:0, dark:true };
+var chart = null;
+
+function initChart() {
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+
+  chart = {
+    canvas: canvas,
+    ctx: ctx,
+    data: [0,0,0],
+    colors: SLICES.map(function(s){ return s.color; }),
+    anim: 0,
+    targetData: [0,0,0]
+  };
+
+  canvas.width  = 220;
+  canvas.height = 220;
+
+  render();
+}
+
+function drawDonut(data, alpha) {
+  var c = chart.ctx;
+  var W = chart.canvas.width;
+  var H = chart.canvas.height;
+  var cx = W/2, cy = H/2;
+  var outerR = W/2 - 8;
+  var innerR = outerR * 0.62;
+
+  c.clearRect(0, 0, W, H);
+
+  var total = data.reduce(function(a,b){ return a+b; }, 0);
+  if (total === 0) {
+    c.beginPath();
+    c.arc(cx, cy, outerR, 0, Math.PI*2);
+    c.arc(cx, cy, innerR, 0, Math.PI*2, true);
+    c.fillStyle = STATE.dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+    c.fill();
+    return;
+  }
+
+  var startA = -Math.PI / 2;
+  var gap = 0.03;
+
+  data.forEach(function(val, i) {
+    if (val <= 0) return;
+    var sweep = (val / total) * Math.PI * 2 * alpha - gap;
+    if (sweep <= 0) return;
+
+    c.beginPath();
+    c.moveTo(cx + Math.cos(startA + gap/2) * innerR, cy + Math.sin(startA + gap/2) * innerR);
+    c.arc(cx, cy, outerR, startA + gap/2, startA + sweep + gap/2);
+    c.arc(cx, cy, innerR, startA + sweep + gap/2, startA + gap/2, true);
+    c.closePath();
+    c.fillStyle = SLICES[i].color;
+    c.fill();
+
+    startA += (val / total) * Math.PI * 2;
+  });
+}
+
+function render() {
+  var t = chart.anim;
+  var eased = t < 1 ? 1 - Math.pow(1-t, 3) : 1;
+  drawDonut(chart.targetData, eased);
+  if (t < 1) {
+    chart.anim = Math.min(1, t + 0.035);
+    requestAnimationFrame(render);
+  }
+}
+
+function updateLegend(pending, completed, missed) {
+  var total = pending + completed + missed;
+  var vals = { completed:completed, pending:pending, missed:missed };
+  var leg = document.getElementById('legend');
+  var dark = STATE.dark;
+  var textCol  = dark ? '#E8E6F0' : '#1a1a1a';
+  var subCol   = dark ? '#ABA8C3' : '#888888';
+
+  leg.innerHTML = '';
+  SLICES.forEach(function(s) {
+    var v = vals[s.key] || 0;
+    var pct = total > 0 ? ((v/total)*100).toFixed(1) : '0.0';
+    var item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML =
+      '<div class="legend-dot" style="background:'+s.color+'"></div>' +
+      '<span class="legend-label" style="color:'+textCol+'">'+s.label+'</span>' +
+      '<span class="legend-val" style="color:'+textCol+'">'+v+'</span>' +
+      '<span class="legend-pct" style="color:'+subCol+'">'+pct+'%</span>';
+    leg.appendChild(item);
+  });
+
+  var numEl = document.getElementById('totalNum');
+  var lblEl = document.getElementById('totalLbl');
+  numEl.textContent = total;
+  numEl.style.color = dark ? '#E8E6F0' : '#1a1a1a';
+  lblEl.textContent = 'total';
+  lblEl.style.color = dark ? '#ABA8C3' : '#888888';
+}
+
+function updateChart(dataJson, isDark) {
+  try {
+    var d = JSON.parse(dataJson);
+    STATE.pending   = (d && typeof d.pending   === 'number') ? d.pending   : 0;
+    STATE.completed = (d && typeof d.completed === 'number') ? d.completed : 0;
+    STATE.missed    = (d && typeof d.missed    === 'number') ? d.missed    : 0;
+    STATE.dark      = !!isDark;
+
+    chart.targetData = [STATE.completed, STATE.pending, STATE.missed];
+    chart.anim = 0;
+    requestAnimationFrame(render);
+
+    updateLegend(STATE.pending, STATE.completed, STATE.missed);
+  } catch(e) { console.error(e); }
+}
+
+initChart();
+</script>
+</body>
+</html>

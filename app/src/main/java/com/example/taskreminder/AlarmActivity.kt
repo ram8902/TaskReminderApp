@@ -14,6 +14,9 @@ import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -48,6 +51,8 @@ class AlarmActivity : ComponentActivity() {
 
     private var mediaPlayer: MediaPlayer? = null
     private var vibrator: Vibrator? = null
+    private var taskIdToLog: Int = -1
+    private var taskTitleToLog: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +72,8 @@ class AlarmActivity : ComponentActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val taskTitle = intent.getStringExtra(EXTRA_TASK_TITLE) ?: "Task Reminder"
+        taskIdToLog = intent.getIntExtra(EXTRA_TASK_ID, -1)
+        taskTitleToLog = taskTitle
 
         startAlarm()
 
@@ -138,6 +145,24 @@ class AlarmActivity : ComponentActivity() {
     }
 
     private fun stopAlarm() {
+        if (taskIdToLog != -1) {
+            androidx.core.app.NotificationManagerCompat.from(applicationContext).cancel(taskIdToLog)
+
+            val id = taskIdToLog
+            val title = taskTitleToLog
+            taskIdToLog = -1 // Prevent duplicate logs
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                com.example.taskreminder.data.AppDatabase.getDatabase(applicationContext)
+                    .taskEventDao().insertTaskEvent(
+                        com.example.taskreminder.data.TaskEvent(
+                            taskId = id,
+                            taskTitle = title,
+                            action = "ALARM_STOPPED",
+                            timestamp = System.currentTimeMillis()
+                        )
+                    )
+            }
+        }
         mediaPlayer?.let {
             if (it.isPlaying) it.stop()
             it.release()

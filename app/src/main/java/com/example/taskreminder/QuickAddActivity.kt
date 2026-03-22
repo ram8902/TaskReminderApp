@@ -35,10 +35,7 @@ class QuickAddActivity : ComponentActivity() {
 
     private fun setupWindow() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.setSoftInputMode(
-            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-        )
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
     }
 
     private fun showSheet() {
@@ -48,10 +45,11 @@ class QuickAddActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Transparent
                 ) {
-                    AddTaskBottomSheet(
+                    com.example.taskreminder.ui.TaskBottomSheet(
+                        existingTask = null,
                         onDismiss = { finish() },
-                        onAdd = { title, startDate, endDate, intervalHours, intervalMinutes ->
-                            viewModel.addTask(title, startDate, endDate, intervalHours, intervalMinutes)
+                        onSave = { title, description, startDate, endDate, intervalHours, intervalMinutes ->
+                            viewModel.addTask(title, description, startDate, endDate, intervalHours, intervalMinutes)
                             finish()
                         }
                     )

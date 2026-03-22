@@ -47,7 +47,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
                 val now = System.currentTimeMillis()
                 if (now > task.endDate) {
-                    db.taskDao().updateTask(task.copy(isActive = false))
+                    db.taskDao().updateTask(task.copy(isActive = false, status = com.example.taskreminder.data.TaskStatus.MISSED.name))
                     pendingResult.finish()
                     return@launch
                 }
